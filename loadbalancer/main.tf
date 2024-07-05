@@ -73,19 +73,19 @@ resource "aws_route_table" "httpd" {
 }
 
 # Route Table Association A
-resource "aws_route_table_association" "route_table_associationA" {
+resource "aws_route_table_association" "route-table-association-A" {
   subnet_id      = aws_subnet.subnetA.id
   route_table_id = aws_route_table.httpd.id
 }
 
 # Route Table Association B
-resource "aws_route_table_association" "route_table_associationB" {
+resource "aws_route_table_association" "route-table-association-B" {
   subnet_id      = aws_subnet.subnetB.id
   route_table_id = aws_route_table.httpd.id
 }
 
 # Route: Ref Internet Gateway
-resource "aws_route" "public_nat_to_internet" {
+resource "aws_route" "public-nat-to-internet" {
   route_table_id         = aws_route_table.httpd.id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.default.id
@@ -101,19 +101,19 @@ resource "aws_network_acl" "httpd" {
 }
 
 # Network Acl AssociationA
-resource "aws_network_acl_association" "network_acl_associationA" {
+resource "aws_network_acl_association" "network-acl-association-A" {
   subnet_id      = aws_subnet.subnetA.id
   network_acl_id = aws_network_acl.httpd.id
 }
 
 # Network Acl AssociationB
-resource "aws_network_acl_association" "network_acl_associationB" {
+resource "aws_network_acl_association" "network-acl-association-B" {
   subnet_id      = aws_subnet.subnetB.id
   network_acl_id = aws_network_acl.httpd.id
 }
 
 # Network Acl Rule
-resource "aws_network_acl_rule" "allow_all_ingress" {
+resource "aws_network_acl_rule" "allow-all-ingress" {
   network_acl_id = aws_network_acl.httpd.id
   rule_number    = 100
   protocol       = "-1"
@@ -122,7 +122,7 @@ resource "aws_network_acl_rule" "allow_all_ingress" {
   cidr_block     = "0.0.0.0/0"
 }
 
-resource "aws_network_acl_rule" "allow_all_egress" {
+resource "aws_network_acl_rule" "allow-all-egress" {
   network_acl_id = aws_network_acl.httpd.id
   rule_number    = 100
   protocol       = "-1"
@@ -178,14 +178,14 @@ resource "aws_security_group" "efs" {
 }
 
 # Mount TargetA
-resource "aws_efs_mount_target" "efs_mount_targetA" {
+resource "aws_efs_mount_target" "efs-mount-target-A" {
   file_system_id  = aws_efs_file_system.httpd.id
   security_groups = [ aws_security_group.efs.id ]
   subnet_id       = aws_subnet.subnetA.id
 }
 
 # Mount TargetB
-resource "aws_efs_mount_target" "efs_mount_targetB" {
+resource "aws_efs_mount_target" "efs-mount-target-B" {
   file_system_id  = aws_efs_file_system.httpd.id
   security_groups = [ aws_security_group.efs.id ]
   subnet_id       = aws_subnet.subnetB.id
@@ -292,10 +292,10 @@ resource "aws_launch_template" "httpd" {
   }
 
   user_data = base64encode(data.template_file.user_data.rendered)
-  
-  depends_on = [ 
-    aws_efs_mount_target.efs_mount_targetA,
-    aws_efs_mount_target.efs_mount_targetB
+
+  depends_on = [
+    aws_efs_mount_target.efs-mount-target-A,
+    aws_efs_mount_target.efs-mount-target-B
    ]
 }
 
